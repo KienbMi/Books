@@ -92,17 +92,25 @@ namespace Books.Core.Entities
         /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (BookAuthors.Count == 0)
+            if (validationContext.ObjectInstance is Book book)
             {
-                yield return new ValidationResult("Book must have at least one author", new string[] { nameof(BookAuthors) });
-            }
-            else if (BookAuthors.Count > 1)
-            {
-                yield return new ValidationResult($"{BookAuthors.ElementAt(1).Author.Name} are twice authors of the book", new string[] { nameof(BookAuthors) });
-            }
-            else
-            {
-                yield return ValidationResult.Success;
+                if (!CheckIsbn(book.Isbn))
+                {
+                    yield return new ValidationResult($"Isbn {book.Isbn} is invalid", new string[] { nameof(Isbn) });
+                }
+                
+                if (book.BookAuthors.Count == 0)
+                {
+                    yield return new ValidationResult("Book must have at least one author", new string[] { nameof(BookAuthors) });
+                }
+                else if (book.BookAuthors.Count > 1)
+                {
+                    yield return new ValidationResult($"{BookAuthors.ElementAt(1).Author.Name} are twice authors of the book", new string[] { nameof(BookAuthors) });
+                }
+                else
+                {
+                    yield return ValidationResult.Success;
+                }
             }
         }
     }

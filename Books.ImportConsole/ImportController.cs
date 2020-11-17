@@ -35,7 +35,7 @@ namespace Books.ImportConsole
                 {
                     Isbn = b[Idx_Isbn],
                     Publishers = b[Idx_Publishes],
-                    Title = b[Idx_Title]
+                    Title = b[Idx_Title],
                 })
                 .ToDictionary(_ => _.Isbn);
 
@@ -45,6 +45,14 @@ namespace Books.ImportConsole
                     Author = authors[b[Idx_Author]],
                     Book = books[b[Idx_Isbn]]
                 });
+
+            foreach (var book in books.Values)
+            {
+                foreach (var item in bookAuthor.Where(_ => _.Book == book))
+                {
+                    book.BookAuthors.Add(item);
+                }                                                       
+            }
 
             return books.Values;
         }

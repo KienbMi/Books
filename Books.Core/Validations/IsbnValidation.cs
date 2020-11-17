@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Books.Core.Entities;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Books.Core.Validations
 {
@@ -6,6 +8,11 @@ namespace Books.Core.Validations
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            if (value is Book book)
+            {
+                return book.Validate(new ValidationContext(book)).FirstOrDefault();
+            }
+            
             return ValidationResult.Success;
         }
     }
