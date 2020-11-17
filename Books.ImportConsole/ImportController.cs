@@ -47,6 +47,7 @@ namespace Books.ImportConsole
                         {
                             Name = name
                         };
+                        authors[name] = author;
                     }
                     BookAuthor bookAuthor = new BookAuthor
                     {
