@@ -7,5 +7,6 @@ namespace Books.Core.Contracts
     public interface IBookRepository
     {
         Task AddRangeAsync(IEnumerable<Book> books);
+        Task<IEnumerable<Book>> GetAllAsync();
     }
 }

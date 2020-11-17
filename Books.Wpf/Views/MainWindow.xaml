@@ -10,7 +10,50 @@
         WindowStyle="ThreeDBorderWindow" BorderThickness="2" 
         BorderBrush="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
         Title="Bücherliste" Height="350" Width="820">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="5"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="10, 0, 0,10">
+            <TextBlock Text="Suche nach Titel:"/>
+            <TextBox Margin="10,0,0,0" 
+                Width="100" 
+                Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <DataGrid Grid.Row="2" Grid.Column="1" 
+                  ItemsSource="{Binding Books}"
+                  SelectedItem="{Binding SelectedBook}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto"
+                  Height="250">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="350" Header="Titel" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Width="200" Header="Autoren" Binding="{Binding Path=Authors}"/>
+                <DataGridTextColumn Width="150" Header="Verlag" Binding="{Binding Path=Publishers}"/>
+                <DataGridTextColumn Width="80" Header="Isbn" Binding="{Binding Path=Isbn}"/>
 
-
+            </DataGrid.Columns>
+        </DataGrid>
+        <WrapPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right">
+            <UniformGrid  Columns="3">
+                <Button Margin="4" Content="Neu"/>
+                <Button Margin="4" Content="Bearbeiten"/>
+                <Button Margin="4" Content="Löschen"/>
+            </UniformGrid>
+        </WrapPanel>
+    </Grid>
 </controls:MetroWindow>
 
