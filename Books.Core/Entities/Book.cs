@@ -110,25 +110,35 @@ namespace Books.Core.Entities
         /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (validationContext.ObjectInstance is Book book)
+            bool isValid = true;
+
+            if (!CheckIsbn(Isbn))
             {
-                if (!CheckIsbn(book.Isbn))
-                {
-                    yield return new ValidationResult($"Isbn {book.Isbn} is invalid", new string[] { nameof(Isbn) });
-                }
+                yield return new ValidationResult($"Isbn {Isbn} is invalid", new string[] { nameof(Isbn) });
+                isValid = false;
+            }
                 
-                if (book.BookAuthors.Count == 0)
-                {
-                    yield return new ValidationResult("Book must have at least one author", new string[] { nameof(BookAuthors) });
-                }
-                else if (book.BookAuthors.Count > 1)
-                {
-                    yield return new ValidationResult($"{BookAuthors.ElementAt(1).Author.Name} are twice authors of the book", new string[] { nameof(BookAuthors) });
-                }
-                else
-                {
-                    yield return ValidationResult.Success;
-                }
+            if (BookAuthors.Count == 0)
+            {
+                yield return new ValidationResult("Book must have at least one author", new string[] { nameof(BookAuthors) });
+                isValid = false;
+            }
+
+            Author duplicateAuthor = BookAuthors
+                                        .GroupBy(_ => _.Author)
+                                        .Where(_ => _.Count() > 1)
+                                        .Select(_ => _.Key)
+                                        .FirstOrDefault();
+
+            if (duplicateAuthor != null)
+            {
+                yield return new ValidationResult($"{duplicateAuthor.Name} are twice authors of the book", new string[] { nameof(BookAuthors) });
+                isValid = false;
+            }
+
+            if (isValid)
+            {
+                yield return ValidationResult.Success;
             }
         }
     }
