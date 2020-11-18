@@ -1,4 +1,5 @@
 ﻿using Books.Core.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -8,12 +9,19 @@ namespace Books.Core.Validations
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value is Book book)
+            if (!(value is string isbn))
             {
-                return book.Validate(new ValidationContext(book)).FirstOrDefault();
+                throw new ArgumentException("Value is not a string", nameof(value));
             }
-            
-            return ValidationResult.Success;
+
+            if (!Book.CheckIsbn(isbn))
+            {
+                return new ValidationResult($"Isbn {isbn} is invalid");
+            }
+            else
+            {
+                return ValidationResult.Success;
+            }
         }
     }
 }
