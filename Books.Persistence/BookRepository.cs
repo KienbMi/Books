@@ -3,6 +3,7 @@ using Books.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,6 +30,18 @@ namespace Books.Persistence
                         .ThenInclude(_ => _.Author)
                         .OrderBy(_ => _.Title)
                         .ToArrayAsync();
+
+        public async Task<IEnumerable<string>> GetAllPublishersAsync()
+            => await _dbContext.Books
+                        .Select(b => b.Publishers)
+                        .OrderBy(_ => _)
+                        .Distinct()
+                        .ToArrayAsync();
+
+        public async Task<Book> GetByIdAsync(int bookId)
+            => await _dbContext.Books
+                        .Where(b => b.Id == bookId)
+                        .SingleOrDefaultAsync();
 
         public async Task<IEnumerable<Book>> GetWithFilterAsync(string filterText)          
             => await _dbContext.Books

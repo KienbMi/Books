@@ -32,15 +32,25 @@
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Title:" VerticalAlignment="Center"/>
         <TextBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding Path=Title}" Height="24" Margin="0"/>
         <TextBlock Grid.Row="2" Grid.Column="1" Text="Verlag:" VerticalAlignment="Center"/>
-        <ComboBox Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding Path=Publisher}" Height="20" Margin="0,5,0,5"/>
+        <ComboBox Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" ItemsSource="{Binding Path=AllPublishers}" SelectedItem="{Binding Path=SelectedPublisher}" Height="20" Margin="0,5,0,5"/>
         <TextBlock Grid.Row="3" Grid.Column="1" Text="Autoren:"/>
-        <Grid Grid.Row="3" 
-              Grid.Column="3"
-              HorizontalAlignment="Stretch" 
-              Height="150">
-            
-        </Grid>
-        <ComboBox Grid.Row="3" Grid.Column="4" Width="250" Height="20" VerticalAlignment="Top"/>
+        <TextBlock Grid.Row="3" Grid.Column="3" Height="150">
+            <DataGrid             
+                  HorizontalAlignment="Stretch"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  HeadersVisibility="None"
+                  ItemsSource="{Binding Path=BookAuthors}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Path=Author.Name}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </TextBlock>
+        <ComboBox Grid.Row="3" Grid.Column="4" Width="250" Height="20" VerticalAlignment="Top"
+                  ItemsSource="{Binding Path=AllAuthors}"
+                  SelectedItem="{Binding Path=SelectedAuthor}"
+                  DisplayMemberPath="Name">
+        </ComboBox>
         <TextBlock Grid.Row="4" Grid.Column="1" Text="Isbn:" VerticalAlignment="Center"/>
         <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Path=Isbn}" MinWidth="250" Height="24"/>
         <StackPanel Grid.Row="3" Grid.Column="5">

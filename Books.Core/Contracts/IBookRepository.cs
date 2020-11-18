@@ -1,5 +1,6 @@
 ﻿using Books.Core.Entities;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace Books.Core.Contracts
@@ -10,5 +11,7 @@ namespace Books.Core.Contracts
         Task<IEnumerable<Book>> GetAllAsync();
         Task<IEnumerable<Book>> GetWithFilterAsync(string filterText);
         void Delete(Book book);
+        Task<Book> GetByIdAsync(int bookId);
+        Task<IEnumerable<string>> GetAllPublishersAsync();
     }
 }

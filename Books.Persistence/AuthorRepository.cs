@@ -16,5 +16,10 @@ namespace Books.Persistence
         {
             _dbContext = dbContext;
         }
+
+        public async Task<IEnumerable<Author>> GetAllAsync()
+            => await _dbContext.Authors
+                    .OrderBy(a => a.Name)
+                    .ToArrayAsync();
     }
 }

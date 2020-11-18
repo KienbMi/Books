@@ -7,5 +7,6 @@ namespace Books.Core.Contracts
 {
     public interface IAuthorRepository
     {
+        Task<IEnumerable<Author>> GetAllAsync();
     }
 }
