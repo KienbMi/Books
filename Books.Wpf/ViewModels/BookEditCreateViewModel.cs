@@ -10,39 +10,39 @@ using System.Threading.Tasks;
 
 namespace Books.Wpf.ViewModels
 {
-  public class BookEditCreateViewModel : BaseViewModel
-  {
-    public string WindowTitle { get; set; }
-
-    public BookEditCreateViewModel() : base(null)
+    public class BookEditCreateViewModel : BaseViewModel
     {
-    }
+        public string WindowTitle { get; set; }
 
-    public BookEditCreateViewModel(IWindowController windowController, Book book) : base(windowController)
-    {
-      LoadCommands();
-    }
+        public BookEditCreateViewModel() : base(null)
+        {
+        }
 
-    public static async Task<BaseViewModel> Create(WindowController controller, Book book)
-    {
-      var model = new BookEditCreateViewModel(controller, book);
-      await model.LoadData();
-      return model;
-    }
+        public BookEditCreateViewModel(IWindowController windowController, Book book) : base(windowController)
+        {
+            LoadCommands();
+        }
 
-    private Task LoadData()
-    {
-      throw new NotImplementedException();
-    }
+        public static async Task<BaseViewModel> Create(IWindowController controller, Book book)
+        {
+            var model = new BookEditCreateViewModel(controller, book);
+            await model.LoadData();
+            return model;
+        }
 
-    private void LoadCommands()
-    {
-    }
+        private Task LoadData()
+        {
+            throw new NotImplementedException();
+        }
 
-    public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-      yield return ValidationResult.Success;
-    }
+        private void LoadCommands()
+        {
+        }
 
-  }
+        public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            yield return ValidationResult.Success;
+        }
+
+    }
 }

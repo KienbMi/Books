@@ -20,8 +20,19 @@ namespace Books.Persistence
         public async Task AddRangeAsync(IEnumerable<Book> books)
             => await _dbContext.AddRangeAsync(books);
 
+        public void Delete(Book book)
+            => _dbContext.Books.Remove(book);
+
         public async Task<IEnumerable<Book>> GetAllAsync()
             => await _dbContext.Books
+                        .Include(_ => _.BookAuthors)
+                        .ThenInclude(_ => _.Author)
+                        .OrderBy(_ => _.Title)
+                        .ToArrayAsync();
+
+        public async Task<IEnumerable<Book>> GetWithFilterAsync(string filterText)          
+            => await _dbContext.Books
+                        .Where(b => EF.Functions.Like(b.Title, $"%{filterText}%"))
                         .Include(_ => _.BookAuthors)
                         .ThenInclude(_ => _.Author)
                         .OrderBy(_ => _.Title)

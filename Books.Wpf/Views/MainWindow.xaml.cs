@@ -26,10 +26,10 @@ namespace Books.Wpf.Views
             InitializeComponent();
         }
 
-        private async void TextBoxTitleFilter_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            var model = (MainWindowViewModel) DataContext;
-            await model.LoadBooks();
-        }
+        //private async void TextBoxTitleFilter_OnTextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    var model = (MainWindowViewModel) DataContext;
+        //    await model.LoadBooksAsync();
+        //}
     }
 }

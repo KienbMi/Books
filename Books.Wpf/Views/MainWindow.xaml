@@ -29,7 +29,7 @@
             <TextBlock Text="Suche nach Titel:"/>
             <TextBox Margin="10,0,0,0" 
                 Width="100" 
-                Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                Text="{Binding Path=FilterText, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
         <DataGrid Grid.Row="2" Grid.Column="1" 
                   ItemsSource="{Binding Books}"
@@ -49,9 +49,9 @@
         </DataGrid>
         <WrapPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right">
             <UniformGrid  Columns="3">
-                <Button Margin="4" Content="Neu"/>
-                <Button Margin="4" Content="Bearbeiten"/>
-                <Button Margin="4" Content="Löschen"/>
+                <Button Margin="4" Command="{Binding Path=CmdNewBook}" Content="Neu"/>
+                <Button Margin="4" Command="{Binding Path=CmdEditBook}" Content="Bearbeiten"/>
+                <Button Margin="4" Command="{Binding Path=CmdDeleteBook}" Content="Löschen"/>
             </UniformGrid>
         </WrapPanel>
     </Grid>

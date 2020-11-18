@@ -8,5 +8,7 @@ namespace Books.Core.Contracts
     {
         Task AddRangeAsync(IEnumerable<Book> books);
         Task<IEnumerable<Book>> GetAllAsync();
+        Task<IEnumerable<Book>> GetWithFilterAsync(string filterText);
+        void Delete(Book book);
     }
 }
