@@ -44,7 +44,7 @@ namespace Books.Wpf.Common
         ///         und Notification für ErrorsChanged für Property auslösen
         ///     HasErrors und IsValid ==> Notification
         /// </summary>
-        protected void ValidateViewModelProperties()
+        protected void Validate()
         {
             ClearErrors(); // alte Fehlermeldungen löschen
             var validationResults = new List<ValidationResult>();

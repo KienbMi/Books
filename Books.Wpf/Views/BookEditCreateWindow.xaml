@@ -30,7 +30,7 @@
             <ColumnDefinition Width="5"/>
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Title:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding Path=Title}" Height="24" Margin="0" VerticalContentAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" Height="24" Margin="0" VerticalContentAlignment="Center"/>
         <TextBlock Grid.Row="2" Grid.Column="1" Text="Verlag:" VerticalAlignment="Center"/>
         <ComboBox Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" ItemsSource="{Binding Path=AllPublishers}" SelectedItem="{Binding Path=SelectedPublisher}" Height="20" Margin="0,5,0,5"/>
         <TextBlock Grid.Row="3" Grid.Column="1" Text="Autoren:" Margin="0,5,0,0"/>
@@ -41,7 +41,8 @@
                 IsReadOnly="True"
                 AutoGenerateColumns="False"
                 HeadersVisibility="None"
-                ItemsSource="{Binding Path=BookAuthors}">
+                ItemsSource="{Binding Path=BookAuthors}"
+                SelectedItem="{Binding Path=SelectedBookAuthor}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=Author.Name}"/>
             </DataGrid.Columns>
@@ -52,11 +53,14 @@
                   DisplayMemberPath="Name">
         </ComboBox>
         <TextBlock Grid.Row="4" Grid.Column="1" Text="Isbn:" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Path=Isbn}" MinWidth="250" Height="24" Margin="0,10,0,0" VerticalContentAlignment="Center"/>
+        <TextBox Grid.Row="4" Grid.Column="3" Text="{Binding Path=Isbn, UpdateSourceTrigger=PropertyChanged}" MinWidth="250" Height="24" Margin="0,10,0,0" VerticalContentAlignment="Center"/>
         <StackPanel Grid.Row="3" Grid.Column="5">
             <Button Command="{Binding Path=CmdAddAuthor}" Content="Hinzufügen" Margin="10,0,0,5"/>
             <Button Command="{Binding Path=CmdDeleteAuthor}" Content="Entfernen" Margin="10,0,0,5"/>
         </StackPanel>
+        <Label Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2"
+               Style="{StaticResource ResourceKey=ErrorCaptionStyle}"
+               Content="{Binding DbError}" />
         <Button Grid.Row="5" Grid.Column="5" Command="{Binding Path=CmdSaveBook}" Content="Buch speichern" Margin="10,0,0,5"/>
     </Grid>
 </controls:MetroWindow>

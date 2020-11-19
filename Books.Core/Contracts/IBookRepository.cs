@@ -13,5 +13,6 @@ namespace Books.Core.Contracts
         void Delete(Book book);
         Task<Book> GetByIdAsync(int bookId);
         Task<IEnumerable<string>> GetAllPublishersAsync();
+        void SetModified(Book book);
     }
 }

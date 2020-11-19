@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Books.Wpf.ViewModels
 {
@@ -19,13 +20,15 @@ namespace Books.Wpf.ViewModels
         private ObservableCollection<Author> _allAuthors;
         private ObservableCollection<string> _allPublishers;
         private ObservableCollection<BookAuthor> _bookAuthors;
-        private string _selectedAuthor;
+        private Author _selectedAuthor;
         private string _selectedPublisher;
+        private BookAuthor _selectedBookAuthor;
 
+        [Required(ErrorMessage ="Titel muss angegeben werden")]
         public string Title
         {
             get => _title;
-            set 
+            set
             {
                 _title = value;
                 OnPropertyChanged();
@@ -36,17 +39,17 @@ namespace Books.Wpf.ViewModels
         public string Isbn
         {
             get => _isbn;
-            set 
-            { 
+            set
+            {
                 _isbn = value;
                 OnPropertyChanged();
                 Validate();
             }
         }
 
-        public ObservableCollection<Author> AllAuthors 
+        public ObservableCollection<Author> AllAuthors
         {
-            get => _allAuthors; 
+            get => _allAuthors;
             set
             {
                 _allAuthors = value;
@@ -54,34 +57,41 @@ namespace Books.Wpf.ViewModels
             }
         }
 
-        public string SelectedAuthor
+        public Author SelectedAuthor
         {
             get => _selectedAuthor;
-            set 
-            { 
+            set
+            {
                 _selectedAuthor = value;
                 OnPropertyChanged();
-                Validate();
             }
         }
 
         public ObservableCollection<BookAuthor> BookAuthors
         {
             get => _bookAuthors;
-            set 
-            { 
+            set
+            {
                 _bookAuthors = value;
                 OnPropertyChanged();
-                Validate();
             }
         }
 
+        public BookAuthor SelectedBookAuthor
+        {
+            get => _selectedBookAuthor;
+            set
+            {
+                _selectedBookAuthor = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<string> AllPublishers
         {
             get => _allPublishers;
-            set 
-            { 
+            set
+            {
                 _allPublishers = value;
                 OnPropertyChanged();
             }
@@ -90,13 +100,16 @@ namespace Books.Wpf.ViewModels
         public string SelectedPublisher
         {
             get => _selectedPublisher;
-            set 
-            { 
+            set
+            {
                 _selectedPublisher = value;
                 OnPropertyChanged();
-                Validate();
             }
         }
+
+        public ICommand CmdAddAuthor { get; set; }
+        public ICommand CmdDeleteAuthor { get; set; }
+        public ICommand CmdSaveBook { get; set; }
 
         public string WindowTitle { get; set; }
 
@@ -120,7 +133,6 @@ namespace Books.Wpf.ViewModels
         private async Task LoadDataAsync()
         {
             await using UnitOfWork uow = new UnitOfWork();
-            //var bookInDb = await uow.Books.GetByIdAsync(_book.Id);
 
             var allAuthorsInDb = await uow.Authors.GetAllAsync();
             AllAuthors = new ObservableCollection<Author>(allAuthorsInDb);
@@ -128,20 +140,84 @@ namespace Books.Wpf.ViewModels
             var allPublishersInDb = await uow.Books.GetAllPublishersAsync();
             AllPublishers = new ObservableCollection<string>(allPublishersInDb);
 
-            Title = _book.Title;
-            Isbn = _book.Isbn;
+            _title = _book.Title;
+            OnPropertyChanged(nameof(Title));
+            _isbn = _book.Isbn;
+            OnPropertyChanged(nameof(Isbn));
+            Validate();
             SelectedPublisher = _book.Publishers;
             BookAuthors = new ObservableCollection<BookAuthor>(_book.BookAuthors);
         }
 
         private void LoadCommands()
         {
-
+            CmdAddAuthor = new RelayCommand(_ => AddAuthor(), _ => SelectedAuthor != null);
+            CmdDeleteAuthor = new RelayCommand(_ => DeleteAuthor(), _ => SelectedBookAuthor != null);
+            CmdSaveBook = new RelayCommand(async _ => await SaveBookAsync(), _ => IsValid);
         }
 
-        public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext = null)
+        private void AddAuthor()
         {
-            yield return ValidationResult.Success;
+            var newBookAuthor = new BookAuthor
+            {
+                Book = _book,
+                Author = SelectedAuthor
+            };
+            BookAuthors.Add(newBookAuthor);
+            OnPropertyChanged(nameof(BookAuthors));
+        }
+
+        private void DeleteAuthor()
+        {
+            BookAuthors.Remove(SelectedBookAuthor);
+            OnPropertyChanged(nameof(BookAuthors));
+        }
+
+        private async Task SaveBookAsync()
+        {
+            await using UnitOfWork uow = new UnitOfWork();
+
+            var bookInDb = await uow.Books.GetByIdAsync(_book.Id);
+            bookInDb.Title = Title;
+            bookInDb.Publishers = SelectedPublisher;
+            bookInDb.Isbn = Isbn;
+
+            bookInDb.BookAuthors.Clear();
+            foreach (var bookAuthor in BookAuthors)
+            {
+                bookInDb.BookAuthors.Add(bookAuthor);
+            }
+            uow.Books.SetModified(bookInDb);
+
+            try
+            {
+                await uow.SaveChangesAsync();
+                Controller.CloseWindow(this);
+            }
+            catch (ValidationException validationException)
+            {
+                if(validationException is IEnumerable<string> properties)
+                {
+                    foreach (var property in properties)
+                    {
+                        Errors.Add(property, new List<string> { validationException.ValidationResult.ErrorMessage });
+                    }
+                }
+                else
+                {
+                    DbError = validationException.ValidationResult.ToString();
+                }
+            }
+        }
+
+        public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            ValidationResult result = new IsbnValidation().GetValidationResult(Isbn, new ValidationContext(Isbn));
+
+            if (result != null && result != ValidationResult.Success)
+            {
+                yield return new ValidationResult($"Isbn {Isbn} ist ungültig", new string[] { nameof(Isbn) });
+            }
         }
     }
 }

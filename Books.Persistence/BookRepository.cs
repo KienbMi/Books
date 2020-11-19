@@ -41,6 +41,7 @@ namespace Books.Persistence
         public async Task<Book> GetByIdAsync(int bookId)
             => await _dbContext.Books
                         .Where(b => b.Id == bookId)
+                        .Include(_ => _.BookAuthors)
                         .SingleOrDefaultAsync();
 
         public async Task<IEnumerable<Book>> GetWithFilterAsync(string filterText)          
@@ -50,5 +51,10 @@ namespace Books.Persistence
                         .ThenInclude(_ => _.Author)
                         .OrderBy(_ => _.Title)
                         .ToArrayAsync();
+
+        public void SetModified(Book book)
+        {
+            _dbContext.Entry(book).State = EntityState.Modified;
+        }
     }
 }
