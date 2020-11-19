@@ -14,5 +14,6 @@ namespace Books.Core.Contracts
         Task<Book> GetByIdAsync(int bookId);
         Task<IEnumerable<string>> GetAllPublishersAsync();
         void SetModified(Book book);
+        void Add(Book book);
     }
 }

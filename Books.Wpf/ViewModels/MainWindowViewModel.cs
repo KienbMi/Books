@@ -81,7 +81,7 @@ namespace Books.Wpf.ViewModels
 
         private async Task NewBookAsync()
         {
-            var window = new BookEditCreateViewModel();
+            var window = await BookEditCreateViewModel.Create(Controller, null);
             Controller.ShowWindow(window, true);
             await LoadBooksAsync();
         }   

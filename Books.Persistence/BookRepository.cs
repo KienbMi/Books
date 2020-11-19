@@ -18,6 +18,9 @@ namespace Books.Persistence
             _dbContext = dbContext;
         }
 
+        public void Add(Book book)
+            => _dbContext.Add(book);
+
         public async Task AddRangeAsync(IEnumerable<Book> books)
             => await _dbContext.AddRangeAsync(books);
 

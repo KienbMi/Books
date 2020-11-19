@@ -33,9 +33,9 @@ namespace Books.ImportConsole
 
                 Book book = new Book
                 {
-                    Title = line[Idx_Title],
-                    Publishers = line[Idx_Publishes],
-                    Isbn = line[Idx_Isbn]
+                    Title = line[Idx_Title].Trim(' '),
+                    Publishers = line[Idx_Publishes].Trim(' '),
+                    Isbn = line[Idx_Isbn].Trim(' ')
                 };
 
                 foreach (var name in authorNames)

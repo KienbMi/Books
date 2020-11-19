@@ -14,14 +14,15 @@ namespace Books.Wpf.ViewModels
 {
     public class BookEditCreateViewModel : BaseViewModel
     {
+        private bool newBook = false;
         private Book _book;
-        private string _title;
-        private string _isbn;
+        private string _title = string.Empty;
+        private string _isbn = string.Empty;
         private ObservableCollection<Author> _allAuthors;
         private ObservableCollection<string> _allPublishers;
         private ObservableCollection<BookAuthor> _bookAuthors;
         private Author _selectedAuthor;
-        private string _selectedPublisher;
+        private string _selectedPublisher = string.Empty;
         private BookAuthor _selectedBookAuthor;
 
         [Required(ErrorMessage ="Titel muss angegeben werden")]
@@ -140,6 +141,14 @@ namespace Books.Wpf.ViewModels
             var allPublishersInDb = await uow.Books.GetAllPublishersAsync();
             AllPublishers = new ObservableCollection<string>(allPublishersInDb);
 
+            BookAuthors = new ObservableCollection<BookAuthor>();
+            if (_book == null)
+            {
+                newBook = true;
+                Validate();
+                return;
+            }
+
             _title = _book.Title;
             OnPropertyChanged(nameof(Title));
             _isbn = _book.Isbn;
@@ -177,7 +186,23 @@ namespace Books.Wpf.ViewModels
         {
             await using UnitOfWork uow = new UnitOfWork();
 
-            var bookInDb = await uow.Books.GetByIdAsync(_book.Id);
+            Book bookInDb;
+            if (newBook == true)
+            {
+                if (_book == null || true)
+                {
+                    _book = new Book();
+                    uow.Books.Add(_book);
+                }
+                
+                bookInDb = _book;
+            }
+            else
+            {
+                bookInDb = await uow.Books.GetByIdAsync(_book.Id);
+                uow.Books.SetModified(bookInDb);
+            }
+
             bookInDb.Title = Title;
             bookInDb.Publishers = SelectedPublisher;
             bookInDb.Isbn = Isbn;
@@ -187,7 +212,6 @@ namespace Books.Wpf.ViewModels
             {
                 bookInDb.BookAuthors.Add(bookAuthor);
             }
-            uow.Books.SetModified(bookInDb);
 
             try
             {
