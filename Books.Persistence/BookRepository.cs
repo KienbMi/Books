@@ -47,6 +47,13 @@ namespace Books.Persistence
                         .Include(_ => _.BookAuthors)
                         .SingleOrDefaultAsync();
 
+        public async Task<IEnumerable<Book>> GetByTitleAsync(string title)
+            => await _dbContext.Books
+                .Include(_ => _.BookAuthors)
+                .ThenInclude(_ => _.Author)
+                .Where(b => b.Title.Contains(title))
+                .ToArrayAsync();
+
         public async Task<IEnumerable<Book>> GetWithFilterAsync(string filterText)          
             => await _dbContext.Books
                         .Where(b => EF.Functions.Like(b.Title, $"%{filterText}%"))
