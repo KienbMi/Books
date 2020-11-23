@@ -17,6 +17,9 @@ namespace Books.Persistence
             _dbContext = dbContext;
         }
 
+        public void Add(Author author)
+            => _dbContext.Add(author);
+
         public async Task<IEnumerable<Author>> GetAllAsync()
             => await _dbContext.Authors
                     .OrderBy(a => a.Name)

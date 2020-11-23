@@ -10,5 +10,6 @@ namespace Books.Core.Contracts
         Task<IEnumerable<Author>> GetAllAsync();
         Task<IEnumerable<AuthorDto>> GetAllDtosAsync();
         Task<AuthorDto> GetDtoByIdAsync(int authorId);
+        void Add(Author author);
     }
 }
