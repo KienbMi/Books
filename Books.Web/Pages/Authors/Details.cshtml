@@ -5,7 +5,7 @@
   ViewData["Title"] = "Details";
 }
 
-<h1>TODO: Names des Autors</h1>
+<h1>@Model.AuthorInfo.Author</h1>
 
 <h4>Bücher:</h4>
 <table class="table">
@@ -23,7 +23,20 @@
     </tr>
   </thead>
   <tbody>
-    
+    @foreach (var book in Model.AuthorInfo.Books)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(_ => book.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(_ => book.Isbn)
+            </td>
+            <td>
+                @Html.DisplayFor(_ => book.Publishers)
+            </td>
+        </tr>
+    }
 </table>
 <div>
   <a asp-page="../Index">Zurück zur Liste</a>

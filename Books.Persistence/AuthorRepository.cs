@@ -21,5 +21,27 @@ namespace Books.Persistence
             => await _dbContext.Authors
                     .OrderBy(a => a.Name)
                     .ToArrayAsync();
+
+        public async Task<IEnumerable<AuthorDto>> GetAllDtosAsync()
+            => await _dbContext.Authors
+                    .OrderBy(a => a.Name)
+                    .Select(a => new AuthorDto
+                    {
+                        Id = a.Id,
+                        Author = a.Name,
+                        Books = a.BookAuthors.Select(ba => ba.Book).ToList()
+                    })
+                    .ToArrayAsync();
+
+        public async Task<AuthorDto> GetDtoByIdAsync(int authorId)
+            => await _dbContext.Authors
+                    .Where(a => a.Id == authorId)
+                    .Select(a => new AuthorDto
+                    {
+                        Id = a.Id,
+                        Author = a.Name,
+                        Books = a.BookAuthors.Select(ba => ba.Book).ToList()
+                    })
+                    .SingleOrDefaultAsync();
     }
 }

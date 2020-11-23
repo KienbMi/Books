@@ -24,7 +24,20 @@
     </tr>
   </thead>
   <tbody>
-    
+      @foreach (var item in Model.Authors)
+      {
+          <tr>
+              <td>
+                  <a asp-page="./Authors/Details" asp-route-id ="@item.Id">@Html.DisplayFor(model => item.Author)</a>
+              </td>
+              <td>
+                  @Html.DisplayFor(model => item.BookCount)
+              </td>
+              <td>
+                  @Html.DisplayFor(model => item.Publishers)
+              </td>
+          </tr>
+      }
   </tbody>
 </table>
 

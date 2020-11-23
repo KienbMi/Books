@@ -8,5 +8,7 @@ namespace Books.Core.Contracts
     public interface IAuthorRepository
     {
         Task<IEnumerable<Author>> GetAllAsync();
+        Task<IEnumerable<AuthorDto>> GetAllDtosAsync();
+        Task<AuthorDto> GetDtoByIdAsync(int authorId);
     }
 }
